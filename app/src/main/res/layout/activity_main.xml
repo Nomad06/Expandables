@@ -13,9 +13,23 @@
         android:id="@+id/expandable">
     </ExpandableListView>
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="clickMe"/>
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addElement"
+            android:text="@string/addElement"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addGroup"
+            android:text="@string/addGroup"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>

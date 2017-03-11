@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
@@ -16,14 +17,10 @@ import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
 
-    private String[] relatives = new String[]{"Parents", "Brothers", "Sisters"};
-    private String[] parents = new String[]{"Father", "Mother"};
-    private String[] brothers = new String[]{"Ah'mad"};
-    private String[] sisters = new String[]{"Ayshat", "Fatima", "Asya", "Rabiya", "Salima"};
-
     ExpandableListView expandableListView;
-    ArrayList<Map<String, String>> group;
+    ArrayList<Map<String, String>> groups;
     ArrayList<ArrayList<Map<String, String>>> childData;
+    AdapterHelper ah;
     SimpleExpandableListAdapter adapter;
 
     @Override
@@ -31,55 +28,56 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        group = new ArrayList<Map<String, String>>();
-        childData = new ArrayList<ArrayList<Map<String, String>>>();
-
-        group = fillArray("groupName", relatives, group, null);
-        fillArray("relative", parents, new ArrayList<Map<String, String>>(), childData);
-        fillArray("relative", brothers, new ArrayList<Map<String, String>>(), childData);
-        fillArray("relative", sisters, new ArrayList<Map<String, String>>(), childData);
-
-        String[] groupFrom = new String[]{"groupName"};
-        int[] groupTo = new int[]{android.R.id.text1};
-
-        String[] childFrom = new String[]{"relative"};
-        int[] childTo = new int[]{android.R.id.text1};
-
-        adapter = new SimpleExpandableListAdapter(this, group, android.R.layout.simple_expandable_list_item_1, groupFrom, groupTo, childData, android.R.layout.simple_list_item_1,
-                childFrom, childTo);
+        ah = new AdapterHelper(this);
+        adapter = ah.getSimpleExpandableListAdapter();
+        groups = ah.getGroup();
+        childData = ah.getChildData();
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandable);
         expandableListView.setAdapter(adapter);
-
-        Uri contact = Uri.parse("content://contacts/people");
-        Intent intent = new Intent(Intent.ACTION_PICK, contact);
-        startActivityForResult(intent, 1);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String itemName;
+        switch (requestCode){
+            case 1:
+                itemName = data.getExtras().get("name").toString();
+                int groupPosition = data.getExtras().getInt("groupNumber");
+                ah.addItemToList(itemName, groupPosition);
+                adapter.notifyDataSetChanged();
+                break;
+
+            case 2:
+                itemName = data.getExtras().get("name").toString();
+                ah.addGroup(itemName);
+                adapter.notifyDataSetChanged();
+                break;
+        }
+
+        /*switch (resultCode){
+            case RESULT_OK:
+                String itemName = data.getExtras().getString("itemName");
+                int groupPosition = data.getExtras().getInt("groupNumber");
+                ah.addItemToList(itemName, groupPosition);
+                adapter.notifyDataSetChanged();
+                break;
+
+            default:
+                break;
+        }*/
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private ArrayList fillArray(String keyName, String[] dataMass, ArrayList<Map<String, String>> arrayToFill, ArrayList<ArrayList<Map<String, String>>> childData){
-        for (String dataItem : dataMass){
-            Map<String, String> m = new HashMap<>();
-            m.put(keyName, dataItem);
-            arrayToFill.add(m);
-        }
-        if(childData != null) {
-            childData.add(arrayToFill);
-            return childData;
-        }
-        else {
-            return arrayToFill;
-        }
+    public void addElement(View view){
+        Intent intent = new Intent(this, AddElementActivity.class);
+        intent.putExtra("group", ah.getGroup());
+        startActivityForResult(intent, 1);
     }
 
-    public void clickMe(View view){
-        Map<String, String> contact = new HashMap<>();
-        contact.put("relative", "Me");
-        childData.get(1).add(contact);
-        adapter.notifyDataSetChanged();
+    public void addGroup(View view){
+        Intent intent = new Intent(this, AddElementActivity.class);
+        intent.putExtra("group", ah.getGroup());
+        startActivityForResult(intent, 2);
     }
 }
