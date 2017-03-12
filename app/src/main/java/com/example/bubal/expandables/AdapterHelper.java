@@ -17,11 +17,17 @@ import java.util.Map;
  */
 
 public class AdapterHelper implements Serializable{
+
+    final String ATTR_GROUP_NAME= "groupName";
+    final String ATTR_RELATIVE_NAME= "relative";
+
     private Context context;
+    private SimpleExpandableListAdapter adapter;
 
     private String[] relatives = new String[]{"Parents", "Brothers", "Sisters"};
     private String[] parents = new String[]{"Father", "Mother"};
     private String[] brothers = new String[]{"Ah'mad"};
+    private String[] lostBrothers = new String[]{"Movsar"};
     private String[] sisters = new String[]{"Ayshat", "Fatima", "Asya", "Rabiya", "Salima"};
 
     private ArrayList<Map<String, String>> group;
@@ -106,5 +112,18 @@ public class AdapterHelper implements Serializable{
         Map<String, String> newItem = new HashMap<>();
         newItem.put("groupName", itemName);
         group.add(newItem);
+        childData.add(new ArrayList<Map<String, String>>());
+    }
+
+    String getGroupText(int groupPos) {
+        return ((Map<String,String>)(adapter.getGroup(groupPos))).get(ATTR_GROUP_NAME);
+    }
+
+    String getChildText(int groupPos, int childPos) {
+        return ((Map<String,String>)(adapter.getChild(groupPos, childPos))).get(ATTR_RELATIVE_NAME);
+    }
+
+    String getGroupChildText(int groupPos, int childPos) {
+        return getGroupText(groupPos) + " " +  getChildText(groupPos, childPos);
     }
 }

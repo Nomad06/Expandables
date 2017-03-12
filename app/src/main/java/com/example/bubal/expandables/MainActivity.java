@@ -17,6 +17,9 @@ import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
 
+    private final int ADD_CONTACT_REQUEST = 1;
+    private final int ADD_GROUP_REQUEST = 2;
+
     ExpandableListView expandableListView;
     ArrayList<Map<String, String>> groups;
     ArrayList<ArrayList<Map<String, String>>> childData;
@@ -32,52 +35,44 @@ public class MainActivity extends Activity {
         adapter = ah.getSimpleExpandableListAdapter();
         groups = ah.getGroup();
         childData = ah.getChildData();
-
         expandableListView = (ExpandableListView) findViewById(R.id.expandable);
         expandableListView.setAdapter(adapter);
+        ExpendableListeners.setListeners(expandableListView);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String itemName;
-        switch (requestCode){
-            case 1:
-                itemName = data.getExtras().get("name").toString();
-                int groupPosition = data.getExtras().getInt("groupNumber");
-                ah.addItemToList(itemName, groupPosition);
-                adapter.notifyDataSetChanged();
-                break;
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case ADD_CONTACT_REQUEST:
+                    itemName = data.getExtras().get("name").toString();
+                    int groupPosition = data.getExtras().getInt("groupNumber");
+                    ah.addItemToList(itemName, groupPosition);
+                    adapter.notifyDataSetChanged();
+                    break;
 
-            case 2:
-                itemName = data.getExtras().get("name").toString();
-                ah.addGroup(itemName);
-                adapter.notifyDataSetChanged();
-                break;
+                case ADD_GROUP_REQUEST:
+                    itemName = data.getExtras().get("name").toString();
+                    ah.addGroup(itemName);
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
         }
 
-        /*switch (resultCode){
-            case RESULT_OK:
-                String itemName = data.getExtras().getString("itemName");
-                int groupPosition = data.getExtras().getInt("groupNumber");
-                ah.addItemToList(itemName, groupPosition);
-                adapter.notifyDataSetChanged();
-                break;
-
-            default:
-                break;
-        }*/
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void addElement(View view){
         Intent intent = new Intent(this, AddElementActivity.class);
         intent.putExtra("group", ah.getGroup());
-        startActivityForResult(intent, 1);
+        intent.putExtra("addElement", true);
+        startActivityForResult(intent, ADD_CONTACT_REQUEST);
     }
 
     public void addGroup(View view){
         Intent intent = new Intent(this, AddElementActivity.class);
-        intent.putExtra("group", ah.getGroup());
-        startActivityForResult(intent, 2);
+        intent.putExtra("addElement", false);
+        startActivityForResult(intent, ADD_GROUP_REQUEST);
     }
 }

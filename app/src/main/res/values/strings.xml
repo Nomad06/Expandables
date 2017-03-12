@@ -3,5 +3,6 @@
     <string name="addElement">Add item</string>
     <string name="addGroup">Add group</string>
     <string name="group_choose">Choose a group</string>
-    <string name="enter_name">Type the contact name</string>
+    <string name="choose_contact">Choose a contact</string>
+    <string name="enter_name">Type a group name</string>
 </resources>

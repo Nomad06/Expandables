@@ -10,28 +10,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/group_choose"/>
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/groupsSpinner"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp"></Spinner>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingTop="20dp"
-        android:text="@string/choose_contact"/>
+        android:text="@string/enter_name"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/itemName"
         tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp"
-        android:editable="false"></EditText>
+        tools:layout_editor_absoluteX="8dp"></EditText>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="addElement"
-            android:text="Add item" />
+            android:text="Add group" />
 
         <Button
             android:id="@+id/cancelButton"
